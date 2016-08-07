@@ -1,3 +1,9 @@
-exports.welcome = function(req, res) {
-	res.send({message: "Welcome to the api."});
+var fs = require('fs');
+var path = require('path');
+
+module.exports = function(app) {
+	fs.readdirSync('./routes').forEach(function (file) {
+		if (file === path.basename(__filename)) { return; }
+		require('./' + file)(app);
+	});
 };

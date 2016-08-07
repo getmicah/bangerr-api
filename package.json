@@ -1,21 +1,21 @@
 {
-  "name": "MYAPP",
+  "name": "bangerr-api",
   "version": "1.0.0",
-  "description": "my first node server",
+  "description": "ndoe api server for bangerr",
   "main": "server.js",
   "scripts": {
     "test": "echo this is a test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/getmicah/MYAPP.git"
+    "url": "git+https://github.com/getmicah/bangerr-api.git"
   },
   "author": "Micah Cowell <micahcowell@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/getmicah/MYAPP/issues"
+    "url": "https://github.com/getmicah/bangerr-api/issues"
   },
-  "homepage": "https://github.com/getmicah/MYAPP#readme",
+  "homepage": "https://github.com/getmicah/bangerr-api#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
