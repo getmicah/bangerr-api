@@ -24,9 +24,7 @@ module.exports = function(app) {
 				if (err) {
 					res.send(err);
 				}
-				res.send({ 
-					message: 'User created!' 
-				});
+				res.send({user});
 			});
 		});
 
@@ -41,7 +39,7 @@ module.exports = function(app) {
 					res.send(user);
 				});
 			} else {
-				res.send('error: illegal id')
+				res.send('error: invalid id')
 			}
 		})
 		.put(function(req, res) {
@@ -61,7 +59,7 @@ module.exports = function(app) {
 					});
 				});
 			} else {
-				res.send('error: illegal id')
+				res.send('error: invalid id')
 			}
 		})
 		.delete(function(req, res) {
@@ -77,7 +75,7 @@ module.exports = function(app) {
 					});
 				});	
 			} else {
-				res.send('error: illegal id')
+				res.send('error: invalid id')
 			}
 		});
 
