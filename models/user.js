@@ -2,11 +2,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
+	username: String,
+	displayName: String,
+	photo: String,
 	twitter: {
 		id: String,
-		token: String,
-		username: String,
-		displayName: String
+		token: String
 	},
 	dateCreated: String
 });

@@ -15,10 +15,10 @@ module.exports = function(app) {
 		})
 		.post(function(req, res) {
 			var user = new User();
+			user.username = req.body.username;
+			user.displayName = req.body.displayName;
 			user.twitter.id = req.body.twitterId;
 			user.twitter.token = req.body.twitterToken;
-			user.twitter.username = req.body.twitterUsername;
-			user.twitter.displayName = req.body.twitterDisplayName;
 			user.dateCreated = moment().format('MM/DD/YYYY');
 			user.save(function(err) {
 				if (err) {
@@ -80,9 +80,9 @@ module.exports = function(app) {
 		});
 
 
-	app.route('/users/twitter/:twitter_id')
+	app.route('/users/twitter/:twitterId')
 		.get(function(req, res) {
-			User.findOne({'twitter.id': req.params.twitter_id}, function(err, user) {
+			User.findOne({'twitter.id': req.params.twitterId}, function(err, user) {
 				if (err) {
 					res.send(err);
 				}
