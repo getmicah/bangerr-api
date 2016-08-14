@@ -13,7 +13,7 @@ mongoose.connect('mongodb://localhost:27017/mongodb');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
-	console.log('beep');
+	console.log('*');
 	next();
 });
 

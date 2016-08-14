@@ -1,4 +1,3 @@
-var moment = require('moment');
 var User = require('../models/user');
 
 
@@ -13,23 +12,10 @@ module.exports = function(app) {
 				res.send(users);
 			});
 		})
-		.post(function(req, res) {
-			var user = new User();
-			user.username = req.body.username;
-			user.displayName = req.body.displayName;
-			user.twitter.id = req.body.twitterId;
-			user.twitter.token = req.body.twitterToken;
-			user.dateCreated = moment().format('MM/DD/YYYY');
-			user.save(function(err) {
-				if (err) {
-					res.send(err);
-				}
-				res.send({user});
-			});
-		});
 
 
-	app.route('/users/:id')
+	// ID
+	app.route('/users/id/:id')
 		.get(function(req, res) {
 			if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
 				User.findById(req.params.id, function(err, user) {
@@ -80,9 +66,10 @@ module.exports = function(app) {
 		});
 
 
-	app.route('/users/twitter/:twitterId')
+	// EMAIL
+	app.route('/users/email/:email')
 		.get(function(req, res) {
-			User.findOne({'twitter.id': req.params.twitterId}, function(err, user) {
+			User.findOne({email: req.params.email}, function(err, user) {
 				if (err) {
 					res.send(err);
 				}
