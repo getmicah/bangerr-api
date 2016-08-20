@@ -1,1 +1,2 @@
-# bangerr-api
+# myapp-api
+a modern day api backend
