@@ -34,7 +34,9 @@ module.exports = function(app) {
 					if (err) {
 						res.send(err);
 					}
-					// UPDATES STUFF
+					console.log('Updating user!');
+					user.newUser = req.body.newUser;
+					user.isMaker = req.body.isMaker;
 					user.save(function(err) {
 						if (err) {
 							res.send(err);

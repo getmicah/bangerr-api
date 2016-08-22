@@ -10,6 +10,8 @@ module.exports = function(app) {
 			user.email = req.body.email;
 			user.password = user.generateHash(req.body.password);
 			user.dateCreated = moment().format('MM/DD/YYYY');
+			user.newUser = true;
+			user.isMaker = false;
 			user.save(function(err) {
 				if (err) {
 					res.send(err);
