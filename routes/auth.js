@@ -7,16 +7,16 @@ module.exports = function(app) {
 	app.route('/auth/signup')
 		.post(function(req, res) {
 			var user = new User();
+			user.dateCreated = moment().format('MM/DD/YYYY');
 			user.email = req.body.email;
 			user.password = user.generateHash(req.body.password);
-			user.dateCreated = moment().format('MM/DD/YYYY');
+			user.username = "";
 			user.newUser = true;
 			user.isMaker = false;
 			user.save(function(err) {
 				if (err) {
 					res.send(err);
 				}
-				console.log('User created!');
 				res.send({user});
 			});
 		});
@@ -29,10 +29,8 @@ module.exports = function(app) {
 					res.send(err);
 				}
 				if (!user.validPassword(req.body.password)) {
-					console.log('Acces DENIED :(');
 					res.send();
 				} else {
-					console.log('Access granted!');
 					res.send(user);
 				}
 			});

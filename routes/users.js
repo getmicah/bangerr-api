@@ -34,9 +34,9 @@ module.exports = function(app) {
 					if (err) {
 						res.send(err);
 					}
-					console.log('Updating user!');
 					user.newUser = req.body.newUser;
 					user.isMaker = req.body.isMaker;
+					user.username = req.body.username;
 					user.save(function(err) {
 						if (err) {
 							res.send(err);
@@ -72,6 +72,18 @@ module.exports = function(app) {
 	app.route('/users/email/:email')
 		.get(function(req, res) {
 			User.findOne({email: req.params.email}, function(err, user) {
+				if (err) {
+					res.send(err);
+				}
+				res.send(user);
+			});
+		});
+
+
+	// USERNAME
+	app.route('/users/username/:username')
+		.get(function(req, res) {
+			User.findOne({username: req.params.username}, function(err, user) {
 				if (err) {
 					res.send(err);
 				}
