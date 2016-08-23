@@ -11,6 +11,7 @@ module.exports = function(app) {
 			user.email = req.body.email;
 			user.password = user.generateHash(req.body.password);
 			user.username = "";
+			user.idea = "";
 			user.newUser = true;
 			user.isMaker = false;
 			user.save(function(err) {

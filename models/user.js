@@ -12,8 +12,8 @@ var userSchema = new Schema({
 	currentPartner: String,
 	partners: [String],
 	projects: [String],
-	idea: String,
-	skillSet: [String]
+	skillSet: [String],
+	idea: String
 });
 
 userSchema.methods.generateHash = function(password) {
