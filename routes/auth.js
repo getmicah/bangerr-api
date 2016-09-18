@@ -1,4 +1,3 @@
-var moment = require('moment');
 var User = require('../models/user');
 
 
@@ -7,7 +6,6 @@ module.exports = function(app) {
 	app.route('/auth/signup')
 		.post(function(req, res) {
 			var user = new User();
-			user.dateCreated = moment().format('MM/DD/YYYY');
 			user.email = req.body.email;
 			user.password = user.generateHash(req.body.password);
 			user.username = "";

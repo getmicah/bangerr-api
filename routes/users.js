@@ -1,6 +1,5 @@
 var User = require('../models/user');
 
-
 module.exports = function(app) {
 
 	app.route('/users')
@@ -27,7 +26,6 @@ module.exports = function(app) {
 				});
 			});
 		});
-
 
 	// ID
 	app.route('/users/id/:id')
@@ -81,7 +79,6 @@ module.exports = function(app) {
 			}
 		});
 
-
 	// EMAIL
 	app.route('/users/email/:email')
 		.get(function(req, res) {
@@ -92,7 +89,6 @@ module.exports = function(app) {
 				res.send(user);
 			});
 		});
-
 
 	// USERNAME
 	app.route('/users/username/:username')

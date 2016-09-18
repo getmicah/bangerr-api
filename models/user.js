@@ -3,11 +3,14 @@ var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-	dateCreated: String,
 	email: String,
 	password: String,
 	username: String,
-	newUser: Boolean
+	newUser: Boolean,
+	followers: [this],
+	following: [this]
+}, {
+	timestamps: true
 });
 
 userSchema.methods.generateHash = function(password) {
