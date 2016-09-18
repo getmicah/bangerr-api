@@ -12,6 +12,21 @@ module.exports = function(app) {
 				res.send(users);
 			});
 		})
+		.delete(function(req, res) {
+			User.find(function(err, users) {
+				if (err) {
+					res.send(err);
+				}
+				User.remove({}, function(err, user) {
+					if (err) {
+						res.send(err);
+					}
+					res.send({
+						message: 'All Users deleted!'
+					});
+				});
+			});
+		});
 
 
 	// ID
@@ -41,8 +56,8 @@ module.exports = function(app) {
 						if (err) {
 							res.send(err);
 						}
-						res.send({ 
-							message: 'User updated!' 
+						res.send({
+							message: 'User updated!'
 						});
 					});
 				});
@@ -58,10 +73,10 @@ module.exports = function(app) {
 					if (err) {
 						res.send(err);
 					}
-					res.send({ 
-						message: 'User deleted!' 
+					res.send({
+						message: 'User deleted!'
 					});
-				});	
+				});
 			} else {
 				res.send('error: invalid id')
 			}
