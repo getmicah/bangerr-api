@@ -1,6 +1,5 @@
 var User = require('../models/user');
 
-
 module.exports = function(app) {
 
 	app.route('/auth/signup')
@@ -19,10 +18,8 @@ module.exports = function(app) {
 			});
 		});
 
-
 	app.route('/auth/login')
 		.post(function(req, res) {
-			console.log('logging in: ' + req.body.username);
 			User.find({
 			 	$or: [
 					{email: req.body.username},
@@ -30,7 +27,6 @@ module.exports = function(app) {
 				]
 			}, function(err, users) {
 				var user = users[0];
-				console.log(user);
 				if (err) {
 					res.send(err);
 				}
