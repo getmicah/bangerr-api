@@ -50,7 +50,6 @@ module.exports = function(app) {
 						res.send(err);
 					}
 					user.newUser = req.body.newUser;
-					user.isMaker = req.body.isMaker;
 					user.username = req.body.username;
 					user.save(function(err) {
 						if (err) {

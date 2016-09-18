@@ -7,13 +7,7 @@ var userSchema = new Schema({
 	email: String,
 	password: String,
 	username: String,
-	newUser: Boolean,
-	isMaker: Boolean,
-	currentPartner: String,
-	partners: [String],
-	projects: [String],
-	skillSet: [String],
-	idea: String
+	newUser: Boolean
 });
 
 userSchema.methods.generateHash = function(password) {
