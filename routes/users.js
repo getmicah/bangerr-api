@@ -27,6 +27,21 @@ module.exports = function(app) {
 			});
 		});
 
+	app.route('/users/:username')
+		.get(function(req, res) {
+			User.find({
+			 	$or: [
+					{email: req.params.username},
+					{username: req.params.username}
+				]
+			}, function(err, users) {
+				if (err) {
+					res.send(err);
+				}
+				res.send(users[0]);
+			});
+		})
+
 	// ID
 	app.route('/users/id/:id')
 		.get(function(req, res) {

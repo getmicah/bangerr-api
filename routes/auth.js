@@ -21,7 +21,15 @@ module.exports = function(app) {
 
 	app.route('/auth/login')
 		.post(function(req, res) {
-			User.findOne({email: req.body.email}, function(err, user) {
+			console.log('logging in: ' + req.body.username);
+			User.find({
+			 	$or: [
+					{email: req.body.username},
+					{username: req.body.username}
+				]
+			}, function(err, users) {
+				var user = users[0];
+				console.log(user);
 				if (err) {
 					res.send(err);
 				}
