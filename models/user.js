@@ -6,6 +6,7 @@ var userSchema = new Schema({
 	email: String,
 	password: String,
 	username: String,
+	displayName: String,
 	newUser: Boolean,
 	followers: [this],
 	following: [this]

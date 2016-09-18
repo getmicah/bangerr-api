@@ -64,6 +64,7 @@ module.exports = function(app) {
 					}
 					user.newUser = req.body.newUser;
 					user.username = req.body.username;
+					user.displayName = req.body.displayName;
 					user.save(function(err) {
 						if (err) {
 							res.send(err);

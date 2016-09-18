@@ -9,6 +9,7 @@ module.exports = function(app) {
 			user.email = req.body.email;
 			user.password = user.generateHash(req.body.password);
 			user.username = "";
+			user.displayName = "";
 			user.newUser = true;
 			user.save(function(err) {
 				if (err) {
