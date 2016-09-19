@@ -40,7 +40,7 @@ module.exports = function(app) {
 				}
 				res.send(users[0]);
 			});
-		})
+		});
 
 	// ID
 	app.route('/users/id/:id')
