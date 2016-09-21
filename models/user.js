@@ -8,8 +8,8 @@ var userSchema = new Schema({
 	username: String,
 	displayName: String,
 	newUser: Boolean,
-	followers: [this],
-	following: [this]
+	followers: [String],
+	following: [String]
 }, {
 	timestamps: true
 });

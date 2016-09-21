@@ -30,6 +30,7 @@ module.exports = function(app) {
 	app.route('/users/:username')
 		.get(function(req, res) {
 			User.find({
+				// find user with id or username
 			 	$or: [
 					{email: req.params.username},
 					{username: req.params.username}
@@ -62,9 +63,21 @@ module.exports = function(app) {
 					if (err) {
 						res.send(err);
 					}
-					user.newUser = req.body.newUser;
-					user.username = req.body.username;
-					user.displayName = req.body.displayName;
+					// account setup info
+					if (req.body.newUser !== null) {
+						user.newUser = req.body.newUser;
+					}
+					if (req.body.username) {
+						user.username = req.body.username;
+					}
+					if (req.body.displayName){
+						user.displayName = req.body.displayName;
+					}
+					// follow user
+					if (req.body.otherUserId) {
+						user.following.push(req.body.otherUserId);
+					}
+					// save user info to mongodb
 					user.save(function(err) {
 						if (err) {
 							res.send(err);
