@@ -3,6 +3,7 @@ var User = require('../models/user');
 module.exports = function(app) {
 
 	app.route('/users')
+		// show all user
 		.get(function(req, res) {
 			User.find(function(err, users) {
 				if (err) {
@@ -11,6 +12,7 @@ module.exports = function(app) {
 				res.send(users);
 			});
 		})
+		// delete all users
 		.delete(function(req, res) {
 			User.find(function(err, users) {
 				if (err) {
@@ -27,13 +29,13 @@ module.exports = function(app) {
 			});
 		});
 
-	app.route('/users/:username')
+	app.route('/users/:user')
+		// get user with email or username
 		.get(function(req, res) {
 			User.find({
-				// find user with id or username
 			 	$or: [
-					{email: req.params.username},
-					{username: req.params.username}
+					{email: req.params.user},
+					{username: req.params.user}
 				]
 			}, function(err, users) {
 				if (err) {
@@ -43,8 +45,8 @@ module.exports = function(app) {
 			});
 		});
 
-	// ID
 	app.route('/users/id/:id')
+		// get user with id
 		.get(function(req, res) {
 			if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
 				User.findById(req.params.id, function(err, user) {
@@ -57,6 +59,7 @@ module.exports = function(app) {
 				res.send('error: invalid id')
 			}
 		})
+		// add information to user
 		.put(function(req, res) {
 			if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
 				User.findById(req.params.id, function(err, user) {
@@ -74,8 +77,24 @@ module.exports = function(app) {
 						user.displayName = req.body.displayName;
 					}
 					// follow user
-					if (req.body.otherUserId) {
-						user.following.push(req.body.otherUserId);
+					if (req.body.followingUserId) {
+						user.following.push(req.body.followingUserId);
+					}
+					if (req.body.followerUserId) {
+						user.followers.push(req.body.followerUserId);
+					}
+					// unfollow user
+					if (req.body.unfollowingUserId) {
+						var i = user.following.indexOf(req.body.unfollowingUserId);
+						if (i !== -1) {
+						    user.following.splice(i, 1);
+						}
+					}
+					if (req.body.unfollowerUserId) {
+						var i = user.followers.indexOf(req.body.unfollowerUserId);
+						if (i !== -1) {
+						    user.followers.splice(i, 1);
+						}
 					}
 					// save user info to mongodb
 					user.save(function(err) {
@@ -91,6 +110,7 @@ module.exports = function(app) {
 				res.send('error: invalid id')
 			}
 		})
+		// delete user with id
 		.delete(function(req, res) {
 			if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
 				User.remove({
@@ -106,28 +126,6 @@ module.exports = function(app) {
 			} else {
 				res.send('error: invalid id')
 			}
-		});
-
-	// EMAIL
-	app.route('/users/email/:email')
-		.get(function(req, res) {
-			User.findOne({email: req.params.email}, function(err, user) {
-				if (err) {
-					res.send(err);
-				}
-				res.send(user);
-			});
-		});
-
-	// USERNAME
-	app.route('/users/username/:username')
-		.get(function(req, res) {
-			User.findOne({username: req.params.username}, function(err, user) {
-				if (err) {
-					res.send(err);
-				}
-				res.send(user);
-			});
 		});
 
 };
