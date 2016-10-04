@@ -1,10 +1,10 @@
-var User = require('../models/user');
+const User = require('../models/user');
 
 module.exports = function(app) {
 
 	app.route('/auth/signup')
 		.post(function(req, res) {
-			var user = new User();
+			let user = new User();
 			user.email = req.body.email;
 			user.password = user.generateHash(req.body.password);
 			user.username = "";
@@ -26,7 +26,7 @@ module.exports = function(app) {
 					{username: req.body.username}
 				]
 			}, function(err, users) {
-				var user = users[0];
+				let user = users[0];
 				if (err) {
 					res.send(err);
 				}

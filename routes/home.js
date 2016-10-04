@@ -1,6 +1,8 @@
 module.exports = function(app) {
 	app.route('/')
 		.get(function(req, res) {
-			res.send({message: "Welcome to the api."});
+			res.send({
+				message: "Welcome to the api."
+			});
 		});
 };
