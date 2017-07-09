@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
-export class HomeRouter {
-	public router: Router
+export default class HomeRouter {
+	public router: Router;
 
 	constructor() {
 		this.router = Router();
@@ -12,12 +12,9 @@ export class HomeRouter {
 		this.router.get('/', this.welcomeMessage.bind(this));
 	}
 
-	public welcomeMessage(req: Request, res: Response, next: NextFunction) {
-		res.send(req.config);
+	private welcomeMessage(req: Request, res: Response, next: NextFunction) {
+		res.json({
+			message: 'welcome to api'
+		});
 	}
 }
-
-const homeRoutes = new HomeRouter();
-homeRoutes.init();
-
-export default homeRoutes.router;

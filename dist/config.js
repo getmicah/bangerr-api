@@ -6,8 +6,11 @@ exports.default = {
     },
     database: {
         path: '~/mongodb',
-        url: 'localhost',
+        host: 'localhost',
         name: 'myapp',
-        port: 42069
+        port: 42069,
+        getUrl: function () {
+            return `mongodb://${this.host}:${this.port}/${this.name}`;
+        }
     }
 };

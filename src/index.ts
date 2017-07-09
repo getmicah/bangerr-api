@@ -1,37 +1,22 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as morgan from 'morgan';
-import { MongoClient, MongoError, Db } from 'mongodb';
 
+import store from './store';
 import config from './config';
 import HomeRouter from './routes/Home';
+import UserRouter from './routes/User';
 
 class Server {
 	public app: express.Application;
 
 	constructor() {
 		this.app = express();
-		this.database();
-		this.middleware();
-		this.routes();
-	}
-
-	private connectDb(db: Db): void {
-		this.app.use((req, res, next) => {
-			console.log('test', db);
-			(<any>req).db = db;
-		    next();
-		});
-	}
-
-	private handleDbError(err: MongoError): void {
-
-	}
-
-	private database(): void {
-		MongoClient.connect(`mongodb://${config.database.url}:${config.database.port}/${config.database.name}`)
-			.then(this.connectDb.bind(this))
-			.catch(this.handleDbError.bind(this));
+		store.init()
+			.then(() => {
+				this.middleware();
+				this.routes();
+			})
+			.catch();
 	}
 
 	private middleware(): void {
@@ -39,14 +24,11 @@ class Server {
 			extended: true
 		}));
 		this.app.use(bodyParser.json());
-		this.app.use((req, res, next) => {
-			(<any>req).config = config;
-		    next();
-		});
 	}
 
 	private routes(): void {
-		this.app.use('/', HomeRouter);
+		this.app.use('/', new HomeRouter().router);
+		this.app.use('/users', new UserRouter().router);
 	}
 }
 

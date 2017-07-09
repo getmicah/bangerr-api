@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-class HomeRouter {
+class AuthRouter {
     constructor() {
         this.router = express_1.Router();
         this.init();
     }
     init() {
-        this.router.get('/', this.welcomeMessage.bind(this));
+        this.router.post('/register', this.register.bind(this));
     }
-    welcomeMessage(req, res, next) {
-        res.json({
-            message: 'welcome to api'
-        });
+    register(req, res, next) {
+    }
+    login(req, res, next) {
     }
 }
-exports.default = HomeRouter;
+exports.AuthRouter = AuthRouter;
+exports.default = new AuthRouter().router;
