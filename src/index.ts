@@ -1,6 +1,10 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { MongoClient } from 'mongodb';
+import * as morgan from 'morgan';
+import { MongoClient, MongoError, Db } from 'mongodb';
+
+import config from './config';
+import HomeRouter from './routes/Home';
 
 class Server {
 	public app: express.Application;
@@ -12,12 +16,22 @@ class Server {
 		this.routes();
 	}
 
-	private database(): void {
-		const url = 'mongodb://localhost:42069/myapp';
-		MongoClient.connect(url, (err, db) => {
-			console.log('Connected correctly to database');
-			db.close();
+	private connectDb(db: Db): void {
+		this.app.use((req, res, next) => {
+			console.log('test', db);
+			(<any>req).db = db;
+		    next();
 		});
+	}
+
+	private handleDbError(err: MongoError): void {
+
+	}
+
+	private database(): void {
+		MongoClient.connect(`mongodb://${config.database.url}:${config.database.port}/${config.database.name}`)
+			.then(this.connectDb.bind(this))
+			.catch(this.handleDbError.bind(this));
 	}
 
 	private middleware(): void {
@@ -26,20 +40,14 @@ class Server {
 		}));
 		this.app.use(bodyParser.json());
 		this.app.use((req, res, next) => {
-			console.log('*');
-			next();
+			(<any>req).config = config;
+		    next();
 		});
 	}
 
 	private routes(): void {
-		let router = express.Router();
-	    router.get('/', (req, res, next) => {
-			res.json({
-				message: 'Hello World!'
-			});
-	    });
-	    this.app.use('/', router);
+		this.app.use('/', HomeRouter);
 	}
 }
 
-export default new Server().app.listen('3000');
+export default new Server().app.listen(config.server.port);
