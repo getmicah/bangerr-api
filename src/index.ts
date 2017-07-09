@@ -2,27 +2,44 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { MongoClient } from 'mongodb';
 
-const app = express();
+class Server {
+	public app: express.Application;
 
-// Database
-var url = 'mongodb://localhost:42069/myapp';
-MongoClient.connect(url, (err, db) => {
-	console.log("Connected correctly to server");
-	db.close();
-});
+	constructor() {
+		this.app = express();
+		this.database();
+		this.middleware();
+		this.routes();
+	}
 
-// Middleware
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
-app.use(bodyParser.json());
-app.use((req, res, next) => {
-	console.log('*');
-	next();
-});
+	private database(): void {
+		const url = 'mongodb://localhost:42069/myapp';
+		MongoClient.connect(url, (err, db) => {
+			console.log('Connected correctly to database');
+			db.close();
+		});
+	}
 
-// Routes
-//require('./routes/index')(app);
+	private middleware(): void {
+		this.app.use(bodyParser.urlencoded({
+			extended: true
+		}));
+		this.app.use(bodyParser.json());
+		this.app.use((req, res, next) => {
+			console.log('*');
+			next();
+		});
+	}
 
-// Go
-app.listen(3000);
+	private routes(): void {
+		let router = express.Router();
+	    router.get('/', (req, res, next) => {
+			res.json({
+				message: 'Hello World!'
+			});
+	    });
+	    this.app.use('/', router);
+	}
+}
+
+export default new Server().app.listen('3000');
