@@ -5,13 +5,13 @@ const config_1 = require("./config");
 class Store {
     init() {
         return new Promise((resolve, reject) => {
-            mongodb_1.MongoClient.connect(config_1.default.database.getUrl(), (err, db) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                }
+            mongodb_1.MongoClient.connect(config_1.default.database.getUrl())
+                .then((db) => {
                 this.db = db;
                 resolve();
+            })
+                .catch((err) => {
+                reject(err);
             });
         });
     }

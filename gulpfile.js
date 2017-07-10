@@ -16,8 +16,6 @@ function runCommand(command) {
 	}
 }
 
-gulp.task('mongodb', runCommand(`mongod --dbpath ${config.database.path} --port ${config.database.port}`));
-
 gulp.task('scripts', () => {
 	return tsProject.src()
         .pipe(tsProject())
@@ -30,7 +28,7 @@ gulp.task('server', () => {
 		ext: 'js',
 	})
 	.on('restart', () => {
-		console.log('restarted!');
+		console.log('*');
 	})
 })
 
@@ -39,4 +37,4 @@ gulp.task('watch', ['scripts'], () => {
 	gulp.watch('dist/**/*.ts', ['server']);
 });
 
-gulp.task('default', ['mongodb', 'scripts', 'server', 'watch']);
+gulp.task('default', ['scripts', 'server', 'watch']);
