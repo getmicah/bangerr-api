@@ -1,6 +1,6 @@
 export default {
 	server: {
-		base: '/api/v1',
+		base: '/v1',
 		port: 3000
 	},
 	database: {

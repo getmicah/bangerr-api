@@ -10,7 +10,7 @@ class UserContoller {
         return new Promise((resolve, reject) => {
             this.collection.find({}).toArray((e, r) => {
                 if (e) {
-                    reject(e);
+                    return reject(e);
                 }
                 resolve(r);
             });
@@ -22,7 +22,17 @@ class UserContoller {
                 _id: new mongodb_1.ObjectID(id)
             }, (e, r) => {
                 if (e) {
-                    reject(e);
+                    return reject(e);
+                }
+                resolve(r);
+            });
+        });
+    }
+    getUserByUsername(username) {
+        return new Promise((resolve, reject) => {
+            this.collection.findOne({ username }, (e, r) => {
+                if (e) {
+                    return reject(e);
                 }
                 resolve(r);
             });
@@ -30,11 +40,21 @@ class UserContoller {
     }
     addUser(newUser) {
         return new Promise((resolve, reject) => {
-            this.collection.insertOne(newUser, (e, r) => {
-                if (e) {
-                    reject(e);
+            this.getUserByUsername(newUser.username)
+                .then((r) => {
+                // dont create duplicate users
+                if (r !== null) {
+                    return reject();
                 }
-                resolve(r);
+                this.collection.insertOne(newUser, (e, r) => {
+                    if (e) {
+                        return reject(e);
+                    }
+                    resolve(r);
+                });
+            })
+                .catch((e) => {
+                reject(e);
             });
         });
     }
@@ -44,10 +64,11 @@ class UserContoller {
                 _id: new mongodb_1.ObjectID(id)
             }, (e, r) => {
                 if (e) {
-                    reject(e);
+                    return reject(e);
                 }
                 if (r.result.n === 0) {
-                    reject();
+                    console.log(true);
+                    return reject();
                 }
                 resolve(r);
             });

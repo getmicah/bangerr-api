@@ -10,11 +10,13 @@ class UserRouter {
     }
     init() {
         this.router.route('/')
-            .get(this.rootGet.bind(this));
-        this.router.route('/id/')
-            .get(this.userGet.bind(this))
+            .get(this.rootGet.bind(this))
             .post(this.rootPost.bind(this))
             .delete(this.rootDelete.bind(this));
+        this.router.route('/:id')
+            .get(this.idGet.bind(this));
+        this.router.route('/:username')
+            .get(this.usernameGet.bind(this));
     }
     rootGet(req, res) {
         this.controller.getAllUsers()
@@ -35,6 +37,9 @@ class UserRouter {
             res.json(r);
         })
             .catch((e) => {
+            if (!e) {
+                res.json({ error: `User: ${req.body.username} already exists` });
+            }
             res.json(e);
         });
     }
@@ -50,13 +55,22 @@ class UserRouter {
             res.json(e);
         });
     }
-    userGet(req, res) {
-        this.controller.getUserById(req.body.id)
+    idGet(req, res, next) {
+        this.controller.getUserById(req.params.id)
             .then((r) => {
             res.json(r);
         })
             .catch((e) => {
-            res.json(e);
+            next();
+        });
+    }
+    usernameGet(req, res, next) {
+        this.controller.getUserByUsername(req.params.username)
+            .then((r) => {
+            res.json(r);
+        })
+            .catch((e) => {
+            next();
         });
     }
 }
