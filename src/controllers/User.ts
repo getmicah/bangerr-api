@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb';
+import { Collection, ObjectID } from 'mongodb';
 
 import store from '../store';
 import UserModel from '../models/User';
@@ -12,45 +12,51 @@ export default class UserContoller {
 
 	public getAllUsers(): Promise<any> {
 		return new Promise((resolve, reject) => {
-			this.collection.find({}).toArray((err, doc) => {
-				if (err) {
-					reject(err);
+			this.collection.find({}).toArray((e, r) => {
+				if (e) {
+					reject(e);
 				}
-				resolve(doc);
+				resolve(r);
 			});
 		});
 	}
 
 	public getUserById(id: string): Promise<any>  {
 		return new Promise((resolve, reject) => {
-			this.collection.findOne({id}, (err, doc) => {
-				if (err) {
-					reject(err);
+			this.collection.findOne({
+				_id: new ObjectID(id)
+			}, (e, r) => {
+				if (e) {
+					reject(e);
 				}
-				resolve(doc);
+				resolve(r);
 			});
 		});
 	}
 
 	public addUser(newUser: UserModel): Promise<any> {
 		return new Promise((resolve, reject) => {
-			this.collection.insertOne(newUser, (err, doc) => {
-				if (err) {
-					reject(err);
+			this.collection.insertOne(newUser, (e, r) => {
+				if (e) {
+					reject(e);
 				}
-				resolve(doc);
+				resolve(r);
 			});
 		});
 	}
 
 	public deleteUserById(id: string): Promise<any> {
 		return new Promise((resolve, reject) => {
-			this.collection.deleteOne({id}, (err, doc: any) => {
-				if (doc.n === 0) {
-					// doesnt exist
+			this.collection.deleteOne({
+				_id: new ObjectID(id)
+			}, (e, r: any) => {
+				if (e) {
+					reject(e);
+				}
+				if (r.result.n === 0) {
 					reject();
 				}
-				resolve();
+				resolve(r);
 			});
 		});
 	}

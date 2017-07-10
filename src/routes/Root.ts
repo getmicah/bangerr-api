@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
-export default class HomeRouter {
+export default class RootRouter {
 	public router: Router;
 
 	constructor() {

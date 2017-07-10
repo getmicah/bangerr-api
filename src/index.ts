@@ -3,14 +3,17 @@ import * as bodyParser from 'body-parser';
 
 import store from './store';
 import config from './config';
-import HomeRouter from './routes/Home';
+
+import RootRouter from './routes/Root';
 import UserRouter from './routes/User';
 
 class Server {
 	public app: express.Application;
+	public router: express.Router;
 
 	constructor() {
 		this.app = express();
+		this.router = express.Router();
 		store.init()
 			.then(() => {
 				this.middleware();
@@ -20,15 +23,14 @@ class Server {
 	}
 
 	private middleware(): void {
-		this.app.use(bodyParser.urlencoded({
-			extended: true
-		}));
+		this.app.use(bodyParser.urlencoded({extended: true}));
 		this.app.use(bodyParser.json());
 	}
 
 	private routes(): void {
-		this.app.use('/', new HomeRouter().router);
-		this.app.use('/users', new UserRouter().router);
+		this.router.use('/', new RootRouter().router);
+		this.router.use('/users', new UserRouter().router)
+		this.app.use(config.server.base, this.router);
 	}
 }
 

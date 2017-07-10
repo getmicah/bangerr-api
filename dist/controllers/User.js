@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const mongodb_1 = require("mongodb");
 const store_1 = require("../store");
 class UserContoller {
     constructor() {
@@ -7,42 +8,48 @@ class UserContoller {
     }
     getAllUsers() {
         return new Promise((resolve, reject) => {
-            this.collection.find({}).toArray((err, doc) => {
-                if (err) {
-                    reject(err);
+            this.collection.find({}).toArray((e, r) => {
+                if (e) {
+                    reject(e);
                 }
-                resolve(doc);
+                resolve(r);
             });
         });
     }
     getUserById(id) {
         return new Promise((resolve, reject) => {
-            this.collection.findOne({ id }, (err, doc) => {
-                if (err) {
-                    reject(err);
+            this.collection.findOne({
+                _id: new mongodb_1.ObjectID(id)
+            }, (e, r) => {
+                if (e) {
+                    reject(e);
                 }
-                resolve(doc);
+                resolve(r);
             });
         });
     }
     addUser(newUser) {
         return new Promise((resolve, reject) => {
-            this.collection.insertOne(newUser, (err, doc) => {
-                if (err) {
-                    reject(err);
+            this.collection.insertOne(newUser, (e, r) => {
+                if (e) {
+                    reject(e);
                 }
-                resolve(doc);
+                resolve(r);
             });
         });
     }
     deleteUserById(id) {
         return new Promise((resolve, reject) => {
-            this.collection.deleteOne({ id }, (err, doc) => {
-                if (doc.n === 0) {
-                    // doesnt exist
+            this.collection.deleteOne({
+                _id: new mongodb_1.ObjectID(id)
+            }, (e, r) => {
+                if (e) {
+                    reject(e);
+                }
+                if (r.result.n === 0) {
                     reject();
                 }
-                resolve();
+                resolve(r);
             });
         });
     }
