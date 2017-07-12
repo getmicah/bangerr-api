@@ -28,18 +28,11 @@ class UserRouter {
         });
     }
     rootPost(req, res) {
-        const newUser = {
-            username: req.body.username,
-            password: req.body.password
-        };
-        this.controller.addUser(newUser)
+        this.controller.addUser(req.body)
             .then((r) => {
             res.json(r);
         })
             .catch((e) => {
-            if (!e) {
-                res.json({ error: `User: ${req.body.username} already exists` });
-            }
             res.json(e);
         });
     }
@@ -49,9 +42,6 @@ class UserRouter {
             res.json(r);
         })
             .catch((e) => {
-            if (!e) {
-                res.json({ error: `User: ${req.body.id} does not exist` });
-            }
             res.json(e);
         });
     }
