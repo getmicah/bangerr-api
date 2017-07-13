@@ -29,6 +29,12 @@ export default class UserContoller {
 				if (e) {
 					return reject(e);
 				}
+				if (r === null) {
+					return reject({
+						type:'User',
+						content:`${id} doesn't exist`
+					});
+				}
 				resolve(r);
 			});
 		});
@@ -40,56 +46,65 @@ export default class UserContoller {
 				if (e) {
 					return reject(e);
 				}
+				if (r === null) {
+					return reject({
+						type:'User',
+						content:`${username} doesn't exist`
+					});
+				}
 				resolve(r);
 			});
 		});
 	}
 
 	public addUser(props: any): Promise<any> {
-		const newUser = new User(props, ['username', 'password']);
 		return new Promise((resolve, reject) => {
-			newUser.validate()
-				.then(newUser.hasRequiredProperties.bind(newUser))
-				.catch(() => {
-					reject({type:'Validation'});
-				})
+			const user = new User(props, ['username', 'password']);
+			user.validate()
+				.then(user.hasRequiredProperties.bind(user))
 				.then(() => {
-					this.searchUserByUsername(newUser.props.username)
+					this.getUserByUsername(user.props.username)
 						.then((r) => {
-							reject({type:'User'});
+							return reject({type:'Database',content:'User already exists'});
 						})
 						.catch((e) => {
 							if (e.type === 'Database') {
-								return reject({
-									type:'Database',
-									content: e.content
-								});
+								return reject({type:'Database',content:e.content});
 							}
-							this.collection.insertOne(newUser.props, (e, r) => {
+							this.collection.insertOne(user.props, (e, r) => {
 								if (e) {
 									return reject({type:'Database', content:e});
 								}
 								resolve(r);
 							});
 						});
-				});
+				})
+				.catch((e) => reject(e));
 		});
 	}
 
-	public searchUserByUsername(username: string): Promise<any> {
+	updateUserById(id: string, props: string): Promise<any> {
 		return new Promise((resolve, reject) => {
-			this.getUserByUsername(username)
-				.then((r) => {
-					if (r === null) {
-						console.log('B')
-						return reject({
-							type:'User',
-							content:`${username} doesn't exist`
-						});
-					}
-					return resolve(r);
+			if (Object.keys(props).length === 0) {
+				return reject({
+					type: 'Validation',
+					content: 'No properties to update'
+				});
+			}
+			const user = new User(props);
+			this.getUserById(id)
+				.then(user.validate.bind(user))
+				.then(() => {
+					this.collection.updateOne({
+						_id: new ObjectID(id)
+					}, {$set: props}, (e, r) => {
+						if (e) {
+							return reject(e);
+						}
+						resolve(r);
+					});
 				})
-				.catch((e) => reject({type:'Database', content:e}));
+				.catch((e) => reject(e));
 		});
 	}
 
@@ -103,6 +118,17 @@ export default class UserContoller {
 				}
 				if (r.result.n === 0) {
 					return reject();
+				}
+				resolve(r);
+			});
+		});
+	}
+
+	public deleteAll(): Promise<any> {
+		return new Promise((resolve, reject) => {
+			this.collection.deleteMany({}, (e, r: any) => {
+				if (e) {
+					return reject(e);
 				}
 				resolve(r);
 			});

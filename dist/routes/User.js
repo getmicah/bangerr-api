@@ -14,7 +14,8 @@ class UserRouter {
             .post(this.rootPost.bind(this))
             .delete(this.rootDelete.bind(this));
         this.router.route('/:id')
-            .get(this.idGet.bind(this));
+            .get(this.idGet.bind(this))
+            .put(this.idPut.bind(this));
         this.router.route('/:username')
             .get(this.usernameGet.bind(this));
     }
@@ -37,13 +38,18 @@ class UserRouter {
         });
     }
     rootDelete(req, res) {
-        this.controller.deleteUserById(req.body.id)
-            .then((r) => {
-            res.json(r);
-        })
-            .catch((e) => {
-            res.json(e);
-        });
+        if (req.body.confirm === 'true') {
+            this.controller.deleteAll()
+                .then((r) => {
+                res.json(r);
+            })
+                .catch((e) => {
+                res.json(e);
+            });
+        }
+        else {
+            res.json('Requires confirmation');
+        }
     }
     idGet(req, res, next) {
         this.controller.getUserById(req.params.id)
@@ -52,6 +58,24 @@ class UserRouter {
         })
             .catch((e) => {
             next();
+        });
+    }
+    idPut(req, res, next) {
+        this.controller.updateUserById(req.params.id, req.body)
+            .then((r) => {
+            res.json(r);
+        })
+            .catch((e) => {
+            res.json(e);
+        });
+    }
+    idDelete(req, res) {
+        this.controller.deleteUserById(req.params.id)
+            .then((r) => {
+            res.json(r);
+        })
+            .catch((e) => {
+            res.json(e);
         });
     }
     usernameGet(req, res, next) {

@@ -15,21 +15,27 @@ export default abstract class Model {
 
 	}
 
-	validate(): Promise<void> {
+	validate(): Promise<any> {
 		return new Promise((resolve, reject) => {
 			if (this.validator(this.props)) {
 				resolve();
 			} else {
-				reject();
+				reject({
+					type:'Validation',
+					content: 'Invalid properties'
+				});
 			}
 		});
 	}
 
-	hasRequiredProperties(): Promise<void> {
+	hasRequiredProperties(): Promise<any> {
 		return new Promise((resolve, reject) => {
 			for (let i = 0; i < this.required.length; i++) {
 				if (!this.props.hasOwnProperty(this.required[i])) {
-					return reject();
+					return reject({
+						type:'Validation',
+						content: `Missing required properties: ${this.required}`
+					});
 				}
 			}
 			resolve();

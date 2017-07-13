@@ -14,7 +14,10 @@ class Model {
                 resolve();
             }
             else {
-                reject();
+                reject({
+                    type: 'Validation',
+                    content: 'Invalid properties'
+                });
             }
         });
     }
@@ -22,7 +25,10 @@ class Model {
         return new Promise((resolve, reject) => {
             for (let i = 0; i < this.required.length; i++) {
                 if (!this.props.hasOwnProperty(this.required[i])) {
-                    return reject();
+                    return reject({
+                        type: 'Validation',
+                        content: `Missing required properties: ${this.required}`
+                    });
                 }
             }
             resolve();

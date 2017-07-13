@@ -19,9 +19,10 @@ export default class UserRouter {
 			.post(this.rootPost.bind(this))
 			.delete(this.rootDelete.bind(this));
 		this.router.route('/:id')
-			.get(this.idGet.bind(this));
+			.get(this.idGet.bind(this))
+			.put(this.idPut.bind(this))
 		this.router.route('/:username')
-			.get(this.usernameGet.bind(this));
+			.get(this.usernameGet.bind(this))
 	}
 
 	private rootGet(req: Request, res: Response) {
@@ -45,13 +46,17 @@ export default class UserRouter {
 	}
 
 	private rootDelete(req: Request, res: Response) {
-		this.controller.deleteUserById(req.body.id)
-			.then((r) => {
-				res.json(r);
-			})
-			.catch((e) => {
-				res.json(e);
-			});
+		if (req.body.confirm === 'true') {
+			this.controller.deleteAll()
+				.then((r) => {
+					res.json(r);
+				})
+				.catch((e) => {
+					res.json(e);
+				});
+		} else {
+			res.json('Requires confirmation')
+		}
 	}
 
 	private idGet(req: Request, res: Response, next: NextFunction) {
@@ -61,6 +66,26 @@ export default class UserRouter {
 			})
 			.catch((e) => {
 				next();
+			});
+	}
+
+	private idPut(req: Request, res: Response, next: NextFunction) {
+		this.controller.updateUserById(req.params.id, req.body)
+			.then((r) => {
+				res.json(r);
+			})
+			.catch((e) => {
+				res.json(e);
+			});
+	}
+
+	private idDelete(req: Request, res: Response) {
+		this.controller.deleteUserById(req.params.id)
+			.then((r) => {
+				res.json(r);
+			})
+			.catch((e) => {
+				res.json(e);
 			});
 	}
 

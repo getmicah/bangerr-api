@@ -3,11 +3,6 @@ import Model from '../models';
 const userSchema: JsonSchema = {
 	id: 'user',
 	properties: {
-		_id: {
-			type: 'string',
-			maxLength: 24,
-    		minLength: 24
-		},
 		username: {
 			type: 'string'
 		},
