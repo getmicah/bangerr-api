@@ -17,10 +17,11 @@ export default class UserRouter {
 		this.router.route('/')
 			.get(this.rootGet.bind(this))
 			.post(this.rootPost.bind(this))
-			.delete(this.rootDelete.bind(this));
+			.delete(this.rootDelete.bind(this))
 		this.router.route('/:id')
 			.get(this.idGet.bind(this))
 			.put(this.idPut.bind(this))
+			.delete(this.idDelete.bind(this))
 		this.router.route('/:username')
 			.get(this.usernameGet.bind(this))
 	}
