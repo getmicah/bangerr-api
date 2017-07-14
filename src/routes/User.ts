@@ -24,79 +24,106 @@ export default class UserRouter {
 			.delete(this.idDelete.bind(this))
 		this.router.route('/:username')
 			.get(this.usernameGet.bind(this))
+			.put(this.usernamePut.bind(this))
+			.delete(this.usernameDelete.bind(this))
 	}
 
 	private rootGet(req: Request, res: Response) {
 		this.controller.getAllUsers()
-			.then((r) => {
-				res.json(r);
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			})
-			.catch((e) => {
-				res.json(e);
+			.catch((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			});
 	}
 
 	private rootPost(req: Request, res: Response) {
 		this.controller.addUser(req.body)
-			.then((r) => {
-				res.json(r);
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			})
-			.catch((e) => {
-				res.json(e);
+			.catch((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			});
 	}
 
 	private rootDelete(req: Request, res: Response) {
-		if (req.body.confirm === 'true') {
-			this.controller.deleteAll()
-				.then((r) => {
-					res.json(r);
-				})
-				.catch((e) => {
-					res.json(e);
-				});
-		} else {
-			res.json('Requires confirmation')
-		}
+		this.controller.deleteAll(req.body.confirm)
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
+			})
+			.catch((r: HttpResponse) => {
+				res.status(r.status).json(r);
+			});
 	}
 
 	private idGet(req: Request, res: Response, next: NextFunction) {
 		this.controller.getUserById(req.params.id)
-			.then((r) => {
-				res.json(r);
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r)
 			})
-			.catch((e) => {
-				next();
+			.catch((r: HttpResponse) => {
+				if (r.status === 400) {
+					return next();
+				}
+				res.status(r.status).json(r);
 			});
 	}
 
 	private idPut(req: Request, res: Response, next: NextFunction) {
 		this.controller.updateUserById(req.params.id, req.body)
-			.then((r) => {
-				res.json(r);
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			})
-			.catch((e) => {
-				res.json(e);
+			.catch((r: HttpResponse) => {
+				if (r.status === 400) {
+					return next();
+				}
+				res.status(r.status).json(r);
 			});
 	}
 
-	private idDelete(req: Request, res: Response) {
+	private idDelete(req: Request, res: Response, next: NextFunction) {
 		this.controller.deleteUserById(req.params.id)
-			.then((r) => {
-				res.json(r);
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			})
-			.catch((e) => {
-				res.json(e);
+			.catch((r: HttpResponse) => {
+				if (r.status === 400) {
+					return next();
+				}
+				res.status(r.status).json(r);
 			});
 	}
 
 	private usernameGet(req: Request, res: Response, next: NextFunction) {
 		this.controller.getUserByUsername(req.params.username)
-			.then((r) => {
-				res.json(r);
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			})
-			.catch((e) => {
-				next();
+			.catch((r: HttpResponse) => {
+				res.status(r.status).json(r);
+			});
+	}
+
+	private usernamePut(req: Request, res: Response, next: NextFunction) {
+		this.controller.updateUserByUsername(req.params.username, req.body)
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
+			})
+			.catch((r: HttpResponse) => {
+				res.status(r.status).json(r);
+			});
+	}
+
+	private usernameDelete(req: Request, res: Response, next: NextFunction) {
+		this.controller.deleteUserByUsername(req.params.username)
+			.then((r: HttpResponse) => {
+				res.status(r.status).json(r);
+			})
+			.catch((r: HttpResponse) => {
+				res.status(r.status).json(r);
 			});
 	}
 }

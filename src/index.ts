@@ -31,7 +31,6 @@ class Server {
 		this.router.use('/', new RootRouter().router);
 		this.router.use('/users', new UserRouter().router)
 		this.app.use(`/v${config.server.version}`, this.router);
-		this.app.use('/', this.router);
 	}
 }
 
