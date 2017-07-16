@@ -1,7 +1,7 @@
 import * as ajv from 'ajv';
 import { ObjectID } from 'mongodb';
 
-export default abstract class Model {
+export default abstract class ObjectModel {
 	public props: any;
 	private schema: JsonSchema;
 	private required: Array<string>;

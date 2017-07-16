@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
 import Controller from '../controllers/User';
+import HttpResponse from '../models/HttpResponse';
 
 export default class UserRouter {
 	public router: Router;

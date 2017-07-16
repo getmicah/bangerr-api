@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 
 import store from '../store';
 import UserContoller from './User';
+import HttpResponse from '../models/HttpResponse';
 
 export default class AuthContoller {
 	private collection: Collection;
@@ -18,11 +19,7 @@ export default class AuthContoller {
 			this.userContoller.getUserByUsername(username)
 				.then((r) => {
 					if (password != r.message.password) {
-						return resolve({
-							status: 400,
-							type: 'Authentication',
-							message: 'Invalid credentials'
-						});
+						// throw 400 code
 					}
 				})
 				.catch((r) => reject(r));

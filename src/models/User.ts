@@ -1,4 +1,4 @@
-import Model from '../models';
+import ObjectModel from './ObjectModel';
 
 const userSchema: JsonSchema = {
 	id: 'user',
@@ -16,7 +16,7 @@ const userSchema: JsonSchema = {
 	additionalProperties: false
 }
 
-export default class User extends Model {
+export default class User extends ObjectModel {
 	constructor(props: any, required?: Array<string>) {
 		super(props, userSchema, required);
 	}

@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
 import Controller from '../controllers/Auth';
+import HttpResponse from '../models/HttpResponse';
 
 export default class AuthRouter {
 	public router: Router;
@@ -14,6 +15,11 @@ export default class AuthRouter {
 
 	public init() {
 		this.router.route('/login')
+			.get((res: Response) => {
+				res.json({
+					message: 'ya bish'
+				})
+			})
 			.post(this.loginPost.bind(this));
 	}
 

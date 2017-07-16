@@ -2,6 +2,7 @@ import { Collection, ObjectID, MongoError, InsertWriteOpResult } from 'mongodb';
 
 import store from '../store';
 import User from '../models/User';
+import HttpResponse from '../models/HttpResponse';
 
 export default class UserContoller {
 	private collection: Collection;
@@ -14,17 +15,9 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.collection.find({}).toArray((dbError, dbRes) => {
 				if (dbError) {
-					return reject({
-						status: 500,
-						type: 'Database',
-						message: dbError
-					});
+					reject(new HttpResponse(500, 'Database', dbError));
 				}
-				resolve({
-					status: 200,
-					type: 'Success',
-					message: dbRes
-				});
+				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
 		});
 	}
@@ -33,24 +26,12 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.collection.findOne(filter, (dbError, dbRes) => {
 				if (dbError) {
-					return reject({
-						status: 500,
-						type: 'Database',
-						message: dbError
-					});
+					reject(new HttpResponse(500, 'Database', dbError));
 				}
 				if (dbRes === null) {
-					return reject({
-						status: 400,
-						type: 'InvalidQueryParameterValue',
-						message: 'User doesn\'t exist.'
-					});
+					reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
 				}
-				resolve({
-					status: 200,
-					type: 'Success',
-					message: dbRes
-				});
+				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
 		});
 	}
@@ -58,11 +39,7 @@ export default class UserContoller {
 	public getUserById(id: string): Promise<HttpResponse>  {
 		return new Promise((resolve, reject) => {
 			if (id.length !== 24) {
-				return reject({
-					status: 400,
-					type: 'InvalidQueryParameterValue',
-					message: 'User doesn\'t exist.'
-				});
+				reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
 			}
 			this.getUser({_id: new ObjectID(id)})
 				.then((r) => resolve(r))
@@ -90,29 +67,17 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.getUserByUsername(user.props.username)
 				.then((r) => {
-					return reject({
-						status: 400,
-						type: 'InvalidQueryParameterValue',
-						message:`User already exists.`
-					});
+					reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User already exists.'));
 				})
 				.catch((r) => {
 					if (r.status === 500) {
-						return reject(r);
+						reject(r);
 					}
 					this.collection.insertOne(user.props, (dbError, dbRes) => {
 						if (dbError) {
-							return reject({
-								status: 500,
-								type: 'Database',
-								message: dbError
-							});
+							reject(new HttpResponse(500, 'Database', dbError));
 						}
-						resolve({
-							status: 200,
-							type: 'Success',
-							message: dbRes
-						});
+						resolve(new HttpResponse(200, 'Success', dbRes));
 					});
 				});
 		});
@@ -127,48 +92,32 @@ export default class UserContoller {
 				.then(() => {
 					this.insertUser(user)
 						.then((r) => resolve(r))
-						.catch((e) => reject(e));
+						.catch((r) => reject(r));
 				})
-				.catch((message) => reject({
-					status: 400,
-					type: 'InvalidInput',
-					message
-				}));
+				.catch((message) => {
+					reject(new HttpResponse(400, 'InvalidInput', message));
+				});
 		});
 	}
 
 	private updateUser(filter: any, props: any): Promise<HttpResponse> {
 		return new Promise((resolve, reject) => {
 			if (Object.keys(props).length === 0) {
-				return reject({
-					status: 400,
-					type: 'InvalidInput',
-					content: 'No properties to update'
-				});
+				reject(new HttpResponse(400, 'InvalidInput', 'No properties to update'));
 			}
 			const user = new User(props);
 			user.validate()
 				.then(() => {
 					this.collection.updateOne(filter, {$set: props}, (dbError, dbRes) => {
 						if (dbError) {
-							return reject({
-								status: 500,
-								type: 'Database',
-								message: dbError
-							});
+							reject(new HttpResponse(500, 'Database', dbError));
 						}
-						resolve({
-							status: 200,
-							type: 'Success',
-							message: dbRes
-						});
+						resolve(new HttpResponse(200, 'Success', dbRes));
 					});
 				})
-				.catch((message) => reject({
-					status: 400,
-					type: 'InvalidInput',
-					message
-				}));
+				.catch((message) => {
+					reject(new HttpResponse(400, 'InvalidInput', message));
+				});
 		});
 	}
 
@@ -180,7 +129,7 @@ export default class UserContoller {
 				}, props)
 					.then((r) => resolve(r))
 					.catch((e) => reject(e));
-			}).catch((e) => reject(e));
+			}).catch((r) => reject(r));
 		});
 	}
 
@@ -190,7 +139,7 @@ export default class UserContoller {
 				this.updateUser({username}, props)
 					.then((r) => resolve(r))
 					.catch((r) => reject(r));
-			}).catch((e) => reject(e));
+			}).catch((r) => reject(r));
 		});
 	}
 
@@ -198,24 +147,12 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.collection.deleteOne(filter, (dbError, dbRes: any) => {
 				if (dbError) {
-					return reject({
-						status: 500,
-						type: 'Database',
-						message: dbError
-					});
+					reject(new HttpResponse(500, 'Database', dbError));
 				}
 				if (dbRes.result.n === 0) {
-					return reject({
-						status: 400,
-						type: 'InvalidQueryParameterValue',
-						message: 'User doesn\'t exist.'
-					});
+					reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
 				}
-				resolve({
-					status: 200,
-					type: 'Success',
-					message: dbRes
-				});
+				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
 		});
 	}
@@ -245,25 +182,13 @@ export default class UserContoller {
 	public deleteAll(confirm: string): Promise<HttpResponse> {
 		return new Promise((resolve, reject) => {
 			if (confirm !== 'true') {
-				return reject({
-					status: 400,
-					type: 'InvalidInput',
-					message: 'Requires confirmation.'
-				})
+				reject(new HttpResponse(400, 'InvalidInput', 'Requires confirmation.'));
 			}
 			this.collection.deleteMany({}, (dbError, dbRes: any) => {
 				if (dbError) {
-					return reject({
-						status: 500,
-						type: 'Database',
-						message: dbError
-					});
+					reject(new HttpResponse(500, 'Database', dbError));
 				}
-				resolve({
-					status: 200,
-					type: 'Success',
-					message: dbRes
-				});
+				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
 		});
 	}
