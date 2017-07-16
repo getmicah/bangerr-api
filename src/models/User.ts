@@ -8,6 +8,9 @@ const userSchema: JsonSchema = {
 		},
 		password: {
 			type: 'string'
+		},
+		admin: {
+			type: 'boolean'
 		}
 	},
 	additionalProperties: false

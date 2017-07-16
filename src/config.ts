@@ -11,5 +11,8 @@ export default {
 		getUrl: function(): string {
 			return `mongodb://${this.host}:${this.port}/${this.name}`;
 		}
+	},
+	auth: {
+		secret: 'contra'
 	}
 }

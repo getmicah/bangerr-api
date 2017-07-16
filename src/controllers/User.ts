@@ -72,12 +72,20 @@ export default class UserContoller {
 
 	public getUserByUsername(username: string): Promise<HttpResponse>  {
 		return new Promise((resolve, reject) => {
-			this.getUser({username})
+			this.collection.createIndex({
+				username: 'text'
+			});
+			this.getUser({
+				$text: {
+					$search: username,
+					$caseSensitive: false
+				} 
+			})
 				.then((r) => resolve(r))
 				.catch((r) => reject(r));
 		});
 	}
-
+	
 	private insertUser(user: User): Promise<HttpResponse> {
 		return new Promise((resolve, reject) => {
 			this.getUserByUsername(user.props.username)
@@ -226,7 +234,7 @@ export default class UserContoller {
 
 	public deleteUserByUsername(username: string): Promise<HttpResponse> {
 		return new Promise((resolve, reject) => {
-			this.getUserById(username).then(() => {
+			this.getUserByUsername(username).then(() => {
 				this.deleteUser({username})
 					.then((r) => resolve(r))
 					.catch((r) => reject(r));
