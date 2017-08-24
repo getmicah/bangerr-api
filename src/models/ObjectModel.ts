@@ -12,7 +12,6 @@ export default abstract class ObjectModel {
 		this.schema = schema;
 		this.required = required;
 		this.validator = ajv().compile(this.schema);
-
 	}
 
 	validate(): Promise<void> {
@@ -20,7 +19,7 @@ export default abstract class ObjectModel {
 			if (this.validator(this.props)) {
 				resolve();
 			} else {
-				reject('Invalid properties.');
+				reject('Error on validation.');
 			}
 		});
 	}

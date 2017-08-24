@@ -15,7 +15,7 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.collection.find({}).toArray((dbError, dbRes) => {
 				if (dbError) {
-					reject(new HttpResponse(500, 'Database', dbError));
+					return reject(new HttpResponse(500, 'Database', dbError));
 				}
 				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
@@ -26,10 +26,10 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.collection.findOne(filter, (dbError, dbRes) => {
 				if (dbError) {
-					reject(new HttpResponse(500, 'Database', dbError));
+					return reject(new HttpResponse(500, 'Database', dbError));
 				}
 				if (dbRes === null) {
-					reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
+					return reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
 				}
 				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
@@ -39,7 +39,7 @@ export default class UserContoller {
 	public getUserById(id: string): Promise<HttpResponse>  {
 		return new Promise((resolve, reject) => {
 			if (id.length !== 24) {
-				reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
+				return reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
 			}
 			this.getUser({_id: new ObjectID(id)})
 				.then((r) => resolve(r))
@@ -71,11 +71,11 @@ export default class UserContoller {
 				})
 				.catch((r) => {
 					if (r.status === 500) {
-						reject(r);
+						return reject(r);
 					}
 					this.collection.insertOne(user.props, (dbError, dbRes) => {
 						if (dbError) {
-							reject(new HttpResponse(500, 'Database', dbError));
+							return reject(new HttpResponse(500, 'Database', dbError));
 						}
 						resolve(new HttpResponse(200, 'Success', dbRes));
 					});
@@ -103,14 +103,14 @@ export default class UserContoller {
 	private updateUser(filter: any, props: any): Promise<HttpResponse> {
 		return new Promise((resolve, reject) => {
 			if (Object.keys(props).length === 0) {
-				reject(new HttpResponse(400, 'InvalidInput', 'No properties to update'));
+				return reject(new HttpResponse(400, 'InvalidInput', 'No properties to update'));
 			}
 			const user = new User(props);
 			user.validate()
 				.then(() => {
 					this.collection.updateOne(filter, {$set: props}, (dbError, dbRes) => {
 						if (dbError) {
-							reject(new HttpResponse(500, 'Database', dbError));
+							return reject(new HttpResponse(500, 'Database', dbError));
 						}
 						resolve(new HttpResponse(200, 'Success', dbRes));
 					});
@@ -147,10 +147,10 @@ export default class UserContoller {
 		return new Promise((resolve, reject) => {
 			this.collection.deleteOne(filter, (dbError, dbRes: any) => {
 				if (dbError) {
-					reject(new HttpResponse(500, 'Database', dbError));
+					return reject(new HttpResponse(500, 'Database', dbError));
 				}
 				if (dbRes.result.n === 0) {
-					reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
+					return reject(new HttpResponse(400, 'InvalidQueryParameterValue', 'User doesn\'t exist.'));
 				}
 				resolve(new HttpResponse(200, 'Success', dbRes));
 			});
@@ -182,11 +182,11 @@ export default class UserContoller {
 	public deleteAll(confirm: string): Promise<HttpResponse> {
 		return new Promise((resolve, reject) => {
 			if (confirm !== 'true') {
-				reject(new HttpResponse(400, 'InvalidInput', 'Requires confirmation.'));
+				return reject(new HttpResponse(400, 'InvalidInput', 'Requires confirmation.'));
 			}
 			this.collection.deleteMany({}, (dbError, dbRes: any) => {
 				if (dbError) {
-					reject(new HttpResponse(500, 'Database', dbError));
+					return reject(new HttpResponse(500, 'Database', dbError));
 				}
 				resolve(new HttpResponse(200, 'Success', dbRes));
 			});

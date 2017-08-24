@@ -5,7 +5,6 @@ import store from './store';
 import config from './config';
 
 import RootRouter from './routes/Root';
-import AuthRouter from './routes/Auth';
 import UserRouter from './routes/User';
 
 class Server {
@@ -30,7 +29,6 @@ class Server {
 
 	private routes(): void {
 		this.router.use('/', new RootRouter().router);
-		this.router.use('/auth', new AuthRouter().router);
 		this.router.use('/users', new UserRouter().router);
 		this.app.use(`/v${config.server.version}`, this.router);
 	}
